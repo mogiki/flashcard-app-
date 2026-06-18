@@ -25,6 +25,14 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Create placeholder assets
+        run: |
+         sudo apt-get install -y  imagemagick
+         convert -size 1024x1024 xc:#0f1117 assets/icon.png
+         convert -size 1024x1024 xc:#0f1117 assets/adaptive-icon.png
+         convert -size 1024x1024 xc:#0f1117 assets/splash.png
+         
+
       - name: Build APK
         run: eas build --platform android --profile preview --non-interactive
 
