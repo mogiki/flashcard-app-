@@ -6,6 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
+    "scheme": "flashcard",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -32,7 +33,6 @@
         }
       ]
     ],
-    "scheme": "flashcard",
     "experiments": {
       "typedRoutes": true
     }
