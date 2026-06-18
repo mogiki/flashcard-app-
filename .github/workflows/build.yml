@@ -1,0 +1,41 @@
+name: EAS Build APK
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup Expo
+        uses: expo/expo-github-action@v8
+        with:
+          expo-version: latest
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build APK
+        run: eas build --platform android --profile preview --non-interactive
+
+      - name: Download APK
+        run: |
+          BUILD_URL=$(eas build:list --platform android --status finished --limit 1 --json --non-interactive | python3 -c "import sys,json; print(json.load(sys.stdin)[0]['artifacts']['buildUrl'])")
+          curl -L "$BUILD_URL" -o flashcard.apk
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: flashcard-apk
+          path: flashcard.apk
+          retention-days: 30
