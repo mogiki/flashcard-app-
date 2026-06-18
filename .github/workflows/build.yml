@@ -5,6 +5,10 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# 🔽 Node 24 강제 전환 경고를 우회하기 위한 환경 변수 추가
+env:
+  ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -25,13 +29,14 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      # 🔽 assets 폴더가 없을 경우를 대비해 생성 명령을 추가했습니다.
       - name: Create placeholder assets
         run: |
-         sudo apt-get install -y  imagemagick
-         convert -size 1024x1024 xc:#0f1117 assets/icon.png
-         convert -size 1024x1024 xc:#0f1117 assets/adaptive-icon.png
-         convert -size 1024x1024 xc:#0f1117 assets/splash.png
-         
+          sudo apt-get install -y imagemagick
+          mkdir -p assets
+          convert -size 1024x1024 xc:#0f1117 assets/icon.png
+          convert -size 1024x1024 xc:#0f1117 assets/adaptive-icon.png
+          convert -size 1024x1024 xc:#0f1117 assets/splash.png
 
       - name: Build APK
         run: eas build --platform android --profile preview --non-interactive
