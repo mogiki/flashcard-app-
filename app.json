@@ -22,7 +22,16 @@
     "plugins": [
       "expo-router",
       "expo-document-picker"
-  ],
-    "scheme": "flashcard"
+    ],
+    "scheme": "flashcard",
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "924d1e61-a758-4e48-ae93-3ccd6b722a02"
+      }
+    },
+    "owner": "theghan"
   }
 }
