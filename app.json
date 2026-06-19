@@ -21,9 +21,8 @@
     },
     "plugins": [
       "expo-router",
-      "expo-speech",
       "expo-document-picker"
-    ],
+  ],
     "scheme": "flashcard"
   }
 }
