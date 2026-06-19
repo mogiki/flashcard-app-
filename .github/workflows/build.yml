@@ -5,7 +5,7 @@ on:
     branches: [main]
   workflow_dispatch:
 
-# Node 버전 경고 우회
+# 🔽 Node 24 강제 전환 경고를 우회하기 위한 환경 변수 추가
 env:
   ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
 
@@ -18,7 +18,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm' # npm 캐시를 사용하면 빌드 속도가 빨라집니다.
 
       - name: Setup Expo
         uses: expo/expo-github-action@v8
@@ -27,36 +26,24 @@ jobs:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
-      # 🚀 [순서 변경] 의존성 설치 전에 에셋 폴더와 플레이스홀더 이미지를 먼저 만듭니다.
+      - name: Install dependencies
+        run: npm install
+
+      # 🔽 assets 폴더가 없을 경우를 대비해 생성 명령을 추가했습니다.
       - name: Create placeholder assets
         run: |
-          sudo apt-get update && sudo apt-get install -y imagemagick
+          sudo apt-get install -y imagemagick
           mkdir -p assets
           convert -size 1024x1024 xc:#0f1117 assets/icon.png
           convert -size 1024x1024 xc:#0f1117 assets/adaptive-icon.png
           convert -size 1024x1024 xc:#0f1117 assets/splash.png
-          # 💡 만약 app.json에 favicon.png가 지정되어 있다면 아래 줄도 주석을 해제하세요.
-          # convert -size 48x48 xc:#0f1117 assets/favicon.png
-
-      # 📦 에셋이 준비된 상태에서 패키지를 안전하게 설치합니다.
-      - name: Install dependencies
-        run: npm ci # npm install 대신 기존 package-lock.json을 보장하는 npm ci를 권장합니다.
 
       - name: Build APK
         run: eas build --platform android --profile preview --non-interactive
 
-      # 📥 빌드 완료된 APK 다운로드 (JSON 추출 방식을 더 안전하게 다듬었습니다)
       - name: Download APK
         run: |
-          BUILD_URL=$(eas build:list --platform android --status finished --limit 1 --json --non-interactive | python3 -c "
-          import sys, json
-          try:
-              data = json.load(sys.stdin)
-              print(data[0]['artifacts']['buildUrl'])
-          except Exception as e:
-              sys.exit(1)
-          ")
-          echo "Downloading from: $BUILD_URL"
+          BUILD_URL=$(eas build:list --platform android --status finished --limit 1 --json --non-interactive | python3 -c "import sys,json; print(json.load(sys.stdin)[0]['artifacts']['buildUrl'])")
           curl -L "$BUILD_URL" -o flashcard.apk
 
       - name: Upload APK artifact

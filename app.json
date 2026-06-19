@@ -6,7 +6,6 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
-    "scheme": "flashcard",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -18,23 +17,13 @@
         "backgroundColor": "#0f1117"
       },
       "package": "com.flashcard.app",
-      "versionCode": 1,
-      "permissions": [
-        "READ_EXTERNAL_STORAGE"
-      ]
+      "versionCode": 1
     },
     "plugins": [
       "expo-router",
       "expo-speech",
-      [
-        "expo-document-picker",
-        {
-          "iCloudContainerEnvironment": "Production"
-        }
-      ]
+      "expo-document-picker"
     ],
-    "experiments": {
-      "typedRoutes": true
-    }
+    "scheme": "flashcard"
   }
 }
